@@ -4,6 +4,7 @@ import br.com.sistema.jdbc.ConnectionFactory;
 import br.com.sistema.model.Clientes;
 
 import br.com.sistema.model.Funcionarios;
+import br.com.sistema.view.frmlogin;
 import br.com.sistema.view.frmmenu;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -270,6 +271,7 @@ public class FuncionariosDAO {
             }else{
                 //Erro de dados
             JOptionPane.showMessageDialog(null, "Dados incorretos");
+            new frmlogin().setVisible(true);//caso for digitado errado os dados, cria um novo frm para tentar novamente
             
             }
 
