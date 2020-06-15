@@ -20,25 +20,11 @@ import javax.swing.table.DefaultTableModel;
  */
 public class frmvendas extends javax.swing.JFrame {
 
-    //carregar a tabela com os dados
-    public void listar() {
+    Clientes obj = new Clientes();
+    double total, preco, subtotal;
+    int qtd;
 
-        ProdutosDAO dao = new ProdutosDAO();
-        List<Produtos> lista = dao.listarProdutos();
-        DefaultTableModel dados = (DefaultTableModel) tblProdutos.getModel();
-        dados.setNumRows(0); //limpar
-
-        for (Produtos c : lista) {
-            dados.addRow(new Object[]{
-                c.getId(),
-                c.getDescricao(),
-                c.getPreco(),
-                c.getQtd_estoque(),
-                c.getFornecedor().getNome() //sempre pegando os dados do fornecedor através do objeto
-            });
-
-        }
-    }
+    DefaultTableModel carrinho;
 
     /**
      * Creates new form frmcliente
@@ -198,6 +184,11 @@ public class frmvendas extends javax.swing.JFrame {
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Dados do produto"));
 
         txtcodigo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtcodigo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtcodigoKeyPressed(evt);
+            }
+        });
 
         Código.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         Código.setText("Código:");
@@ -209,6 +200,11 @@ public class frmvendas extends javax.swing.JFrame {
 
         btnpesquisaproduto.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btnpesquisaproduto.setText("Pesquisar");
+        btnpesquisaproduto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnpesquisaprodutoActionPerformed(evt);
+            }
+        });
 
         txtpreco.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
@@ -222,6 +218,11 @@ public class frmvendas extends javax.swing.JFrame {
 
         btnadicionarItem.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btnadicionarItem.setText("Adicionar Item");
+        btnadicionarItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnadicionarItemActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -336,6 +337,11 @@ public class frmvendas extends javax.swing.JFrame {
         btnpagamento.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnpagamento.setText("PAGAMENTO");
         btnpagamento.setToolTipText("");
+        btnpagamento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnpagamentoActionPerformed(evt);
+            }
+        });
 
         btncancelarvenda.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btncancelarvenda.setText("CANCELAR VENDA");
@@ -402,11 +408,10 @@ public class frmvendas extends javax.swing.JFrame {
         //busca cliente por cpf
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {//somente se pressionar a tecla enter ele faz a busca
 
-            Clientes obj = new Clientes();
             ClientesDAO dao = new ClientesDAO();
 
             obj = dao.buscaporcpf(txtcpf.getText()); //buscando pelo cpf digitado e enviando ao método como parametro
-
+            //o objeto foi criado la em cima na area publica
             txtnome.setText(obj.getNome());//seta o nome recebido pelo objeto
         }
     }//GEN-LAST:event_txtcpfKeyPressed
@@ -419,6 +424,65 @@ public class frmvendas extends javax.swing.JFrame {
 
         txtnome.setText(obj.getNome());//seta o nome recebido pelo objeto
     }//GEN-LAST:event_btnpesquisaclienteActionPerformed
+
+    private void txtcodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtcodigoKeyPressed
+        //busca um produto pelo código assim que digitado
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            Produtos obj = new Produtos();
+            ProdutosDAO dao = new ProdutosDAO();
+
+            obj = dao.buscaPorCodigo(Integer.parseInt(txtcodigo.getText()));
+
+            txtproduto.setText(obj.getDescricao());
+            txtpreco.setText(String.valueOf(obj.getPreco()));
+
+        }
+    }//GEN-LAST:event_txtcodigoKeyPressed
+
+    private void btnpesquisaprodutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnpesquisaprodutoActionPerformed
+        Produtos obj = new Produtos();
+        ProdutosDAO dao = new ProdutosDAO();
+
+        obj = dao.buscaPorCodigo(Integer.parseInt(txtcodigo.getText()));
+
+        txtproduto.setText(obj.getDescricao());
+        txtpreco.setText(String.valueOf(obj.getPreco()));
+    }//GEN-LAST:event_btnpesquisaprodutoActionPerformed
+
+    private void btnadicionarItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnadicionarItemActionPerformed
+        //adicionar o item ao carrinho de compras
+        qtd = Integer.parseInt(txtquantidade.getText());
+        preco = Double.parseDouble(txtpreco.getText());
+
+        subtotal = qtd * preco;
+
+        total += subtotal;//total sempre sera acrescido com o valor do subtotal
+        txttotal.setText(String.valueOf(total));
+
+        //adicionar o produto no carrinho de compras
+        carrinho = (DefaultTableModel) tblItens.getModel();
+
+        carrinho.addRow(new Object[]{
+            txtcodigo.getText(),
+            txtproduto.getText(),
+            txtquantidade.getText(),
+            txtpreco.getText(),
+            subtotal
+        });
+
+    }//GEN-LAST:event_btnadicionarItemActionPerformed
+
+    private void btnpagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnpagamentoActionPerformed
+        frmpagamentos telap = new frmpagamentos();//instanciando um novo frm de pagamentos para moder enviar os dados da tela de vendas paratelap.txttotalvenda.setText(String.valueOf(total));//setando o campo de total com o valor da variavel global total criada no inicio
+        telap.txttotalvenda.setText(String.valueOf(total));
+                
+        telap.cliente = obj;//enviando o objeto  cliente pegado, e colocando no pagamento
+        telap.carrinho = carrinho;//vinda da classe pagamento(tabela com os itens da venda)
+        
+
+        telap.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnpagamentoActionPerformed
 
     /**
      * @param args the command line arguments

@@ -5,17 +5,34 @@
  */
 package br.com.sistema.view;
 
+import br.com.sistema.dao.ItemVendaDAO;
+import br.com.sistema.dao.ProdutosDAO;
+import br.com.sistema.dao.VendasDAO;
+import br.com.sistema.model.Clientes;
+import br.com.sistema.model.ItemVenda;
+import br.com.sistema.model.Produtos;
+import br.com.sistema.model.Vendas;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author perei
  */
 public class frmpagamentos extends javax.swing.JFrame {
 
-    /**
-     * Creates new form frmpagamentos
-     */
+    //variaveis pubicas
+    Clientes cliente = new Clientes();
+    DefaultTableModel carrinho;
+
     public frmpagamentos() {
         initComponents();
+        txtcartao.setText("0");
+        txtcheque.setText("0");
+        txtdinheiro.setText("0");
+        txttroco.setText("0");
     }
 
     /**
@@ -40,6 +57,9 @@ public class frmpagamentos extends javax.swing.JFrame {
         txttotalvenda = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         btnfinalizar = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtobs = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Tela de pagamentos");
@@ -96,6 +116,19 @@ public class frmpagamentos extends javax.swing.JFrame {
 
         btnfinalizar.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         btnfinalizar.setText("Finalizar Venda");
+        btnfinalizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnfinalizarActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel7.setText("Obs.:");
+
+        txtobs.setColumns(20);
+        txtobs.setFont(new java.awt.Font("Monospaced", 0, 14)); // NOI18N
+        txtobs.setRows(5);
+        jScrollPane1.setViewportView(txtobs);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -107,32 +140,35 @@ public class frmpagamentos extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(43, 43, 43)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(jLabel5)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txttroco, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(jLabel4)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtcheque, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(jLabel3)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtcartao, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(jLabel2)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(txtdinheiro, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(54, 54, 54)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txttroco, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtcheque, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtcartao, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtdinheiro, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addComponent(btnfinalizar))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel6)
-                                .addGap(32, 32, 32)
-                                .addComponent(txttotalvenda, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(74, 74, 74)
-                        .addComponent(btnfinalizar)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txttotalvenda, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -140,7 +176,7 @@ public class frmpagamentos extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtdinheiro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -153,21 +189,103 @@ public class frmpagamentos extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(txtcheque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(txttroco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(37, 37, 37)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txttroco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(txttotalvenda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(btnfinalizar)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnfinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnfinalizarActionPerformed
+        double pcartao, pcheque, pdinheiro, totalpago, totalvenda, troco;
+
+        //recebendo os valores dos pagamentos
+        pcartao = Double.parseDouble(txtcartao.getText());
+        pcheque = Double.parseDouble(txtcheque.getText());
+        pdinheiro = Double.parseDouble(txtdinheiro.getText());
+
+        totalvenda = Double.parseDouble(txttotalvenda.getText());
+
+        //pega o total pago
+        totalpago = pcartao + pcheque + pdinheiro;
+
+        //calcula o troco
+        troco = totalpago - totalvenda;
+        txttroco.setText(String.valueOf(troco));
+
+        Vendas objv = new Vendas();
+
+        //dados do cliente(id)
+        objv.setCliente(cliente);
+
+        //Data da venda
+        Date agora = new Date();  //criando um objeto tipo Date
+        SimpleDateFormat dataEUA = new SimpleDateFormat("yyyy-MM-dd");  //convertendo para a data no formato do mysql
+        String datamysql = dataEUA.format(agora);
+        objv.setData_venda(datamysql);
+
+        //total da venda
+        objv.setTotal_venda(totalvenda);
+        objv.setObs(txtobs.getText());
+
+        VendasDAO dao_v = new VendasDAO();
+        dao_v.cadastrarVenda(objv);
+
+        //Retorna o ultimo id da venda realizada
+        objv.setId(dao_v.retornaUltimaVenda());
+        //System.out.println("Id da ultima venda: " + objv.getId());
+
+        //cadastrar os produtos na tbl Item Venda(banco)
+        for (int i = 0; i < carrinho.getRowCount(); i++) {//continua o laço levando em conta as linhas da tabela)
+            int qtd_estoque, qtd_comprada, qtd_atualizada;
+            ProdutosDAO dao_produto = new ProdutosDAO();
+            Produtos objp = new Produtos();
+            
+            ItemVenda item = new ItemVenda();
+            item.setVenda(objv);
+
+            objp.setId(Integer.parseInt(carrinho.getValueAt(i, 0).toString()));  //i = linha selecionada 0 = coluna do id
+            item.setProduto(objp);
+            item.setQtd(Integer.parseInt(carrinho.getValueAt(i, 2).toString())); //2 = coluna da quantidade
+            item.setSubtotal(Double.parseDouble(carrinho.getValueAt(i, 4).toString()));  //4 = coluna do subtotal
+
+            //Baixa estoque
+            qtd_estoque = dao_produto.retornaEstoqueAtual(objp.getId());//pegando o estoqye atual do produto
+            qtd_comprada = Integer.parseInt(carrinho.getValueAt(i, 2).toString()); //qtd atual é a mesma que a do carrinho
+            qtd_atualizada = qtd_estoque - qtd_comprada;
+            
+            dao_produto.baixaEstoque(objp.getId(), qtd_atualizada);
+            
+            
+            
+            
+            
+            
+            
+            ItemVendaDAO daoitem = new ItemVendaDAO();
+            daoitem.cadastraItem(item);
+
+        }
+        /**
+         * ****
+         */
+        JOptionPane.showMessageDialog(null, "Venda cadastrada com sucesso");
+
+
+    }//GEN-LAST:event_btnfinalizarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -212,11 +330,14 @@ public class frmpagamentos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField txtcartao;
     private javax.swing.JTextField txtcheque;
     private javax.swing.JTextField txtdinheiro;
-    private javax.swing.JTextField txttotalvenda;
+    private javax.swing.JTextArea txtobs;
+    public javax.swing.JTextField txttotalvenda;
     private javax.swing.JTextField txttroco;
     // End of variables declaration//GEN-END:variables
 }
