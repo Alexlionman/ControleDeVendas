@@ -5,7 +5,9 @@
  */
 package br.com.sistema.view;
 
+import br.com.sistema.dao.ItemVendaDAO;
 import br.com.sistema.dao.VendasDAO;
+import br.com.sistema.model.ItemVenda;
 import br.com.sistema.model.Produtos;
 import br.com.sistema.model.Vendas;
 import java.time.LocalDate;
@@ -20,7 +22,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class frmHistorico extends javax.swing.JFrame {
 
-    /**1
+    /**
+     * 1
      * Creates new form frmHistorico
      */
     public frmHistorico() {
@@ -138,6 +141,11 @@ public class frmHistorico extends javax.swing.JFrame {
                 "Código", "Data Venda", "Cliente", "Total Venda", "Observações"
             }
         ));
+        tblhistorico.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblhistoricoMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblhistorico);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -173,33 +181,64 @@ public class frmHistorico extends javax.swing.JFrame {
         //Receber as datas
         try {
             DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate data_inicio = LocalDate.parse(txtdatainicio.getText(), formato);
-        LocalDate data_fim = LocalDate.parse(txtdatafim.getText(), formato);
+            LocalDate data_inicio = LocalDate.parse(txtdatainicio.getText(), formato);
+            LocalDate data_fim = LocalDate.parse(txtdatafim.getText(), formato);
 
-        VendasDAO dao = new VendasDAO();
-        List<Vendas> lista = dao.lstarVendasPorPeriodo(data_inicio, data_fim);
+            VendasDAO dao = new VendasDAO();
+            List<Vendas> lista = dao.lstarVendasPorPeriodo(data_inicio, data_fim);
 
-        DefaultTableModel dados = (DefaultTableModel) tblhistorico.getModel();
-        dados.setNumRows(0); //limpar
-        
-        for(Vendas v:lista){
-           dados.addRow(new Object[]{
-               v.getId(),
-               v.getData_venda(),
-               v.getCliente().getNome(),
-               v.getTotal_venda(),
-               v.getObs()
-                   
-             
-           });
-           
-           
-        }
+            DefaultTableModel dados = (DefaultTableModel) tblhistorico.getModel();
+            dados.setNumRows(0); //limpar
+
+            for (Vendas v : lista) {
+                dados.addRow(new Object[]{
+                    v.getId(),
+                    v.getData_venda(),
+                    v.getCliente().getNome(),
+                    v.getTotal_venda(),
+                    v.getObs()
+
+                });
+
+            }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,"Nenhum registro encontrado");
+            JOptionPane.showMessageDialog(null, "Nenhum registro encontrado");
         }
 
     }//GEN-LAST:event_btnpesquisarActionPerformed
+
+    private void tblhistoricoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblhistoricoMouseClicked
+        //ao clicar em uma vebda
+        frmDetalheVenda tela = new frmDetalheVenda();
+        //enviando os dados da tabela para o formulario de detalhes da venda
+        tela.txtdatavenda.setText(tblhistorico.getValueAt(tblhistorico.getSelectedRow(), 1).toString());
+        tela.txtcliente.setText(tblhistorico.getValueAt(tblhistorico.getSelectedRow(), 2).toString());
+        tela.txttotalvenda.setText(tblhistorico.getValueAt(tblhistorico.getSelectedRow(), 3).toString());
+        tela.txtobs.setText(tblhistorico.getValueAt(tblhistorico.getSelectedRow(), 4).toString());
+
+        int venda_id = Integer.parseInt(tblhistorico.getValueAt(tblhistorico.getSelectedRow(), 0).toString());
+        
+        //dados dos itens na tabela
+        ItemVenda item = new ItemVenda();
+        ItemVendaDAO dao_item = new ItemVendaDAO();
+        List<ItemVenda> listaitens = dao_item.listaItensPorVenda(venda_id);
+                
+        DefaultTableModel dados = (DefaultTableModel) tela.tblitensvendidos.getModel();
+        dados.setNumRows(0); //limpar
+        
+        for(ItemVenda c:listaitens){
+           dados.addRow(new Object[]{
+             c.getProduto().getDescricao(),
+             c.getQtd(),
+             c.getProduto().getPreco(),
+             c.getSubtotal()
+             
+           });
+        
+        
+        }
+        tela.setVisible(true);
+    }//GEN-LAST:event_tblhistoricoMouseClicked
 
     /**
      * @param args the command line arguments

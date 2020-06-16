@@ -150,10 +150,10 @@ public class frmDetalheVenda extends javax.swing.JFrame {
 
         tblitensvendidos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-
+                {null, null, null, null}
             },
             new String [] {
-                "Código", "Produto", "Qtd Comprada", "Valor", "Subtotal"
+                "Produto", "Qtd Comprada", "Valor", "Subtotal"
             }
         ));
         jScrollPane1.setViewportView(tblitensvendidos);
@@ -233,11 +233,11 @@ public class frmDetalheVenda extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable tblitensvendidos;
-    private javax.swing.JTextField txtcliente;
-    private javax.swing.JTextField txtdatavenda;
-    private javax.swing.JTextArea txtobs;
-    private javax.swing.JTextField txttotalvenda;
+    public javax.swing.JTable tblitensvendidos;
+    public javax.swing.JTextField txtcliente;
+    public javax.swing.JTextField txtdatavenda;
+    public javax.swing.JTextArea txtobs;
+    public javax.swing.JTextField txttotalvenda;
     // End of variables declaration//GEN-END:variables
 
 }
