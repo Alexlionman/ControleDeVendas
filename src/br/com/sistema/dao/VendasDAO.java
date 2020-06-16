@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -75,20 +76,19 @@ public class VendasDAO {
     }
 
 //metodo que filtra vendas por data
-    public List<Vendas> lstarVendasPorPeriodo(String data_inicio, String data_fim) {
+    public List<Vendas> lstarVendasPorPeriodo(LocalDate data_inicio, LocalDate data_fim) {
         try {
 
             //cria a lista
             List<Vendas> lista = new ArrayList<>();
 
             //comando com o inner join referente ao nome d fornecedor para mostra na tabela
-            String sql = "select v.id, v.data_venda, c.nome. v.totalvenda, v.observacoes"
-                    + "from tb_vendas as v"
-                    + "inner join tb_cliente as c on(v.cliente_id = c.id) where v.data_venda BETWEEN? AND?";
+            String sql = "select v.id, date_format(v.data_venda,'%d/%m/%y') as data_formatada, c.nome, v.total_venda, v.observacoes from tb_vendas as v "
+                    + "inner join tb_clientes as c on(v.cliente_id = c.id) where v.data_venda BETWEEN? AND?";//este comando ja formata a data
 
             PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setString(1, data_inicio);
-            stmt.setString(2, data_fim);
+            stmt.setString(1, data_inicio.toString());
+            stmt.setString(2, data_fim.toString());
             
             ResultSet rs = stmt.executeQuery();
 
@@ -97,7 +97,7 @@ public class VendasDAO {
                 Clientes c = new Clientes();
 
                 obj.setId(rs.getInt("v.id"));
-                obj.setData_venda(rs.getString("v.data_venda"));
+                obj.setData_venda(rs.getString("data_formatada"));
                 c.setNome(rs.getString("c.nome"));
                 obj.setTotal_venda(rs.getDouble("v.total_venda"));
                 obj.setObs(rs.getString("v.observacoes"));
