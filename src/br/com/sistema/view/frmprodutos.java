@@ -679,7 +679,7 @@ public class frmprodutos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    public javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JPanel painelconsulta;
     private javax.swing.JPanel paineldados;
     private javax.swing.JTable tblProdutos;

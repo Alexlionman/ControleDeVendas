@@ -257,26 +257,40 @@ public class FuncionariosDAO {
             String sql = "select * from tb_funcionarios where email = ? and senha = ?";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, email);
-            stmt.setString(2,senha);
-            
+            stmt.setString(2, senha);
+
             ResultSet rs = stmt.executeQuery();
-            
-            
-            if(rs.next()){
-              //Usuario logou
-              JOptionPane.showMessageDialog(null, "Seja bem vindo ao sistema");
-                frmmenu tela = new frmmenu();
-                tela.usuariologado = rs.getString("nome");  //passa o login para uma variavel, vai ser usada para mstrar qual o usuario logafo
-                tela.setVisible(true);
-            }else{
+
+            if (rs.next()) {
+                //Usuario logou
+
+                //caso seja admin
+                if (rs.getString("nivel_acesso").equals("Admin")) {
+                    JOptionPane.showMessageDialog(null, "Seja bem vindo ao sistema");
+                    frmmenu tela = new frmmenu();
+                    tela.usuariologado = rs.getString("nome");  //passa o login para uma variavel, vai ser usada para mstrar qual o usuario logafo
+                    tela.setVisible(true);
+                } //caso não seja admin
+                else if (rs.getString("nivel_acesso").equals("Usuário")) {
+                    JOptionPane.showMessageDialog(null, "Seja bem vindo ao sistema");
+                    frmmenu tela = new frmmenu();
+                    tela.usuariologado = rs.getString("nome");  //passa o login para uma variavel, vai ser usada para mstrar qual o usuario logafo
+                    
+                    //desabilitar os menus pois o usuário não tem acesso
+                    tela.menu_posicao.setEnabled(false);
+                    tela.menu_historico.setEnabled(false);
+                    tela.setVisible(true);
+                }
+
+            } else {
                 //Erro de dados
-            JOptionPane.showMessageDialog(null, "Dados incorretos");
-            new frmlogin().setVisible(true);//caso for digitado errado os dados, cria um novo frm para tentar novamente
-            
+                JOptionPane.showMessageDialog(null, "Dados incorretos");
+                new frmlogin().setVisible(true);//caso for digitado errado os dados, cria um novo frm para tentar novamente
+
             }
 
         } catch (SQLException erro) {
-            JOptionPane.showMessageDialog(null, "Erro"  + erro);
+            JOptionPane.showMessageDialog(null, "Erro" + erro);
         }
 
     }
