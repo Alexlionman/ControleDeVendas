@@ -664,7 +664,7 @@ public class frmcliente extends javax.swing.JFrame {
 
     private void btnpesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnpesquisarActionPerformed
         //busca por nome
-        String nome = "%" +txtpesquisa.getText()+ "%";
+        String nome = "%" +txtpesquisa.getText()+ "%";  //concatena os "%" para fazer a busca no mysql com resultados próximos/parecidos
         
         ClientesDAO dao = new ClientesDAO();
         List<Clientes> lista = dao.buscaClientePorNome(nome);
@@ -696,7 +696,7 @@ public class frmcliente extends javax.swing.JFrame {
     }//GEN-LAST:event_btnpesquisarActionPerformed
 
     private void txtpesquisaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyPressed
-       //para pesquisar conforme o usuario digita uma letra
+       //para pesquisar conforme o usuario digita uma letra, a cada tecla pressionada faz uma nova consulta no banco e retorna os resultados
         String nome = "%" +txtpesquisa.getText()+ "%";
         
         ClientesDAO dao = new ClientesDAO();
